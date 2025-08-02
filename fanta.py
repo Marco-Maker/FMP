@@ -158,6 +158,7 @@ try:
         on="Id", 
         how="left"  # Mantieni i giocatori di quotazioni anche se non trovati in statistiche
     )
+    quotazioni_df["Cognome"] = quotazioni_df["Nome"].str.split().str[-1].str.upper()
 except FileNotFoundError:
     messagebox.showwarning("Attenzione", f"File {FILE_STATISTICHE} non trovato! Statistiche non caricate.")
 
