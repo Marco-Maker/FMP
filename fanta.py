@@ -6,6 +6,7 @@ from tkinter import font
 # === PATH FILE ===
 FILE_QUOTAZIONI = "Quotazioni_Fantacalcio_Stagione_2025_26.xlsx"
 FILE_INTERESSE = "lista_giocatori.xlsx"
+FILE_STATISTICHE = "Statistiche_Fantacalcio_Stagione_2024_25.xlsx"
 
 # === COLORI TEMA BLU ===
 COLORS = {
@@ -141,6 +142,25 @@ def aggiorna_flag_interesse():
     quotazioni_df["Interesse"] = quotazioni_df["Cognome"].isin(interesse_df["Cognome"])
     # Aggiorna anche la tab "I Miei Giocatori"
     tabs_data["⭐ I Miei Giocatori"] = quotazioni_df[quotazioni_df["Interesse"]]
+
+# === Carica file Statistiche ===
+
+try:
+    statistiche_df = pd.read_excel(FILE_STATISTICHE, header=1)
+
+    # Assicuriamoci che i nomi siano normalizzati (es. spazi, maiuscole)
+    statistiche_df["Cognome"] = statistiche_df["Nome"].str.split().str[-1].str.upper()
+    
+    # Merge tra quotazioni e statistiche sul cognome (o meglio sull'Id se disponibile)
+    quotazioni_df = pd.merge(
+        quotazioni_df,
+        statistiche_df.drop(columns=["Nome", "Squadra", "R", "Rm"]),  # evita duplicati
+        on="Id", 
+        how="left"  # Mantieni i giocatori di quotazioni anche se non trovati in statistiche
+    )
+except FileNotFoundError:
+    messagebox.showwarning("Attenzione", f"File {FILE_STATISTICHE} non trovato! Statistiche non caricate.")
+
 
 # === INTERFACCIA GRAFICA ===
 root = tk.Tk()
@@ -292,13 +312,20 @@ def carica_tabella(tree, tab_name):
     for _, row in df_filtered.iterrows():
         fvm_personalizzato = int(row["FVM"] * fattore)
         interesse_icon = "⭐" if row["Interesse"] else "⚪"
+        # Aggiungi anche altre colonne statistiche se vuoi mostrarle (opzionale)
         tree.insert("", "end", values=(
             row["Nome"], 
             row["Squadra"],
             row["FVM"],
             fvm_personalizzato,
-            interesse_icon
+            interesse_icon,
+            row.get("Mv", ""), 
+            row.get("Fm", ""), 
+            row.get("Ass", ""),
+            row.get("Gf", ""),
+            row.get("Pv", "")
         ))
+
 
 # === FUNZIONE: ordinamento colonne ===
 def sort_column(tree, col, reverse):
@@ -456,7 +483,7 @@ for tab_nome, df in tabs_data.items():
     table_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
     tree = ttk.Treeview(table_frame, 
-                       columns=("Nome", "Squadra", "FVM", "FVM_Pers", "Interesse"), 
+                       columns=("Nome", "Squadra", "FVM", "FVM_Pers", "Interesse", "Mv", "Fm", "Ass", "Gf", "Pv"), #Mv = media voto, Fm = fantavoto, Ass = assist, Gf = goal, Pv = presenze
                        show="headings",
                        style='Treeview')
     
@@ -466,12 +493,23 @@ for tab_nome, df in tabs_data.items():
     tree.heading("FVM", text="💎 FVM", command=lambda _tree=tree: sort_column(_tree, "FVM", False))
     tree.heading("FVM_Pers", text="💰 FVM Personalizzato", command=lambda _tree=tree: sort_column(_tree, "FVM_Pers", False))
     tree.heading("Interesse", text="⭐ Interesse", command=lambda _tree=tree: sort_column(_tree, "Interesse", False))
-    
+    tree.heading("Mv", text="Mv")
+    tree.heading("Fm", text="Fm")
+    tree.heading("Ass", text="Ass")
+    tree.heading("Pv", text="Pv")
+    tree.heading("Gf", text="Goal")
+
     tree.column("Nome", width=200)
     tree.column("Squadra", width=120)
     tree.column("FVM", width=80)
     tree.column("FVM_Pers", width=130)
     tree.column("Interesse", width=80)
+    tree.column("Mv", width=50)
+    tree.column("Fm", width=50)
+    tree.column("Ass", width=50)
+    tree.column("Pv", width=50)
+    tree.column("Gf", width=50)
+
     
     # Scrollbar
     scrollbar = ttk.Scrollbar(table_frame, orient="vertical", command=tree.yview)
