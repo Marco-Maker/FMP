@@ -1,6 +1,6 @@
 # 📊 Fantacalcio Stats & Quotations
 
-Questo progetto è pensato per analizzare, confrontare e utilizzare i dati delle stagioni recenti di Fantacalcio, con particolare riferimento alle **statistiche** e alle **quotazioni ufficiali dei giocatori**.
+Questo progetto è pensato per analizzare, confrontare e utilizzare i dati delle stagioni recenti di Fantacalcio, con particolare riferimento alle **statistiche** e alle **quotazioni ufficiali dei giocatori**. Nello specifico tratta la Serie A, con quotazioni 2025/26 e statistiche della stagione 2024/25. Una volta inseriti i giocatori nella propria lista è possibile salvarla sotto forma di excel.
 
 ## 📁 Contenuto del progetto
 
@@ -74,9 +74,11 @@ pip install pandas numpy matplotlib seaborn
 
 ## 📌 Note
 
-* I file sono in formato `.csv` o `.tsv` e possono essere caricati facilmente tramite `pandas`.
+* I file sono in formato `.xlsx` e possono essere caricati facilmente tramite `pandas`.
 * In caso di problemi con la lettura, verifica l'encoding (es. `utf-8`, `latin1`).
 
 ---
 
-Contattami se vuoi uno script di esempio per iniziare subito l'esplorazione dei dati.
+Buon divertimento,
+
+Marco-Maker
