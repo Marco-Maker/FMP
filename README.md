@@ -70,14 +70,6 @@ Per eseguire gli script Python su questi dati, assicurati di avere installato le
 pip install pandas numpy matplotlib seaborn
 ```
 
-Eventualmente anche:
-
-```bash
-pip install jupyter notebook
-```
-
-Per l'esecuzione e la visualizzazione dei dati in ambiente interattivo.
-
 ---
 
 ## 📌 Note
